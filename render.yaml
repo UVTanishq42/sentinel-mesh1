@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: sentinel-mesh
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn sentinel_mesh.wsgi"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: "sentinel-mesh.onrender.com"

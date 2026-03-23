@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <section class="card auth-card">
+        <h2>Create an Account</h2>
+        <form method="post" action="{% url 'signup' %}" class="auth-form">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="form-field">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="help-text">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="message message-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="auth-button">Sign Up</button>
+        </form>
+        <p class="auth-links">Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
+    </section>
+</div>
+{% endblock %}

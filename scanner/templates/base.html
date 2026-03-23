@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentinel Mesh – Internship Link Scanner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'scanner/styles.css' %}?v=2">
+</head>
+<body>
+    <div class="ambient-background"></div>
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="header-content">
+                <h1>Sentinel Mesh</h1>
+                <p>AI-based Job / Internship Scam Detector</p>
+            </div>
+            <div class="header-right">
+                <div class="header-legend">
+                    <div class="legend-item"><span class="legend-color safe-bg"></span> 0.00 - 0.10: Safe</div>
+                    <div class="legend-item"><span class="legend-color medium-bg"></span> 0.11 - 0.50: Unsafe</div>
+                    <div class="legend-item"><span class="legend-color unsafe-bg"></span> 0.51 - 1.00: Danger</div>
+                </div>
+                
+                <div class="auth-status">
+                    {% if user.is_authenticated %}
+                        <span class="user-info">Logged in as <strong>{{ user.username }}</strong></span>
+                        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="logout-btn">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="login-link">Sign In</a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <main class="app-main">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <footer class="app-footer">
+            <p>Built with Django, Python, SQL (SQLite), HTML, CSS, and JavaScript.</p>
+        </footer>
+    </div>
+
+    <script src="{% static 'scanner/app.js' %}?v=2"></script>
+</body>
+</html>

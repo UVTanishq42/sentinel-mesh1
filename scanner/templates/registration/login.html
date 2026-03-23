@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <section class="card auth-card">
+        <h2>Sign In</h2>
+        <form method="post" action="{% url 'login' %}" class="auth-form">
+            {% csrf_token %}
+            {% if form.errors %}
+                <p class="message message-error">Your username and password didn't match. Please try again.</p>
+            {% endif %}
+
+            <div class="form-field">
+                <label for="id_username">Username</label>
+                <input id="id_username" name="username" type="text" required autofocus>
+            </div>
+            
+            <div class="form-field">
+                <label for="id_password">Password</label>
+                <input id="id_password" name="password" type="password" required>
+            </div>
+
+            <button type="submit" class="auth-button">Login</button>
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+        <p class="auth-links">Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
+    </section>
+</div>
+{% endblock %}

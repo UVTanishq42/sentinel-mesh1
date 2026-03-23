@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+            <section class="card scan-card {% if link %}has-result{% endif %}">
+                <div class="scan-column">
+                    <h2>Scan a link</h2>
+                <form method="post" action="{% url 'scan_link' %}" class="scan-form">
+                    {% csrf_token %}
+                    <label for="url-input">Internship / job link</label>
+                    <input id="url-input"
+                           name="url"
+                           type="url"
+                           required
+                           placeholder="https://example.com/internship-offer"
+                           value="{{ url|default_if_none:'' }}">
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="company-name-input">Official company name (optional)</label>
+                            <input id="company-name-input"
+                                   name="company_name"
+                                   type="text"
+                                   placeholder="Example Corp">
+                        </div>
+                        <div class="form-field">
+                            <label for="company-email-input">Official company email (optional)</label>
+                            <input id="company-email-input"
+                                   name="company_email"
+                                   type="email"
+                                   placeholder="security@example.com">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="scan-button">Scan link</button>
+
+                    {% if error %}
+                        <p class="message message-error">{{ error }}</p>
+                    {% endif %}
+                </form>
+
+                {% if link %}
+                    <div class="result"
+                         data-risk="{{ link.risk_score }}"
+                         data-risk-band="{{ risk_band }}">
+                        {% if risk_band == "safe" %}
+                            <h3 class="safe">This link looks SAFE</h3>
+                            <p>Risk score: {{ link.risk_score|floatformat:2 }} (0.00–0.10)</p>
+                        {% elif risk_band == "medium" %}
+                            <h3 class="medium">This link looks RISKY</h3>
+                            <p>Risk score: {{ link.risk_score|floatformat:2 }} (0.11–0.50)</p>
+                            <p>This link has some warning signals. Proceed carefully, but no automatic email was sent.</p>
+                        {% else %}
+                            <h3 class="unsafe">Warning: this link is HIGH RISK and looks SUSPICIOUS or DEAD</h3>
+                            <p>Risk score: {{ link.risk_score|floatformat:2 }} (0.51–1.00)</p>
+                            <p>Do not share credentials or personal information. The domain might be non-existent or strongly resembling a scam. We have notified the official company email if provided.</p>
+                        {% endif %}
+                        <p class="meta">
+                            Cached result: seen {{ link.times_seen }} time{{ link.times_seen|pluralize }}.
+                        </p>
+                        {% if risk_band == "high" and company_email %}
+                            {% if email_sent and not email_using_console %}
+                                <p class="message message-success">Notification email sent to {{ company_email }}.</p>
+                            {% elif email_error %}
+                                <p class="message message-error">Email could not be sent: {{ email_error }}</p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </section>
+
+            </section>
+
+            <section class="card history-card">
+                <h2>Recently checked links</h2>
+                {% if recent_links %}
+                    <ul class="recent-list">
+                        {% for item in recent_links %}
+                            <li class="recent-item {% if item.is_safe %}recent-safe{% else %}recent-unsafe{% endif %}">
+                                <span class="recent-url">{{ item.url }}</span>
+                                <span class="recent-status">
+                                    {% if item.is_safe %}SAFE{% else %}UNSAFE{% endif %}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No links scanned yet. Paste your first link above.</p>
+                {% endif %}
+            </section>
+{% endblock %}
+

@@ -1,0 +1,14 @@
+# Don't commit your Gmail credentials
+sentinel_mesh/email_config.py
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Django
+db.sqlite3
+staticfiles/
+*.log
+.env
