@@ -59,8 +59,12 @@
                             Cached result: seen {{ link.times_seen }} time{{ link.times_seen|pluralize }}.
                         </p>
                         {% if risk_band == "high" and company_email %}
-                            {% if email_sent and not email_using_console %}
-                                <p class="message message-success">Notification email sent to {{ company_email }}.</p>
+                            {% if email_sent %}
+                                {% if email_using_console %}
+                                    <p class="message message-success">The system is in "Log Mode": The notification for {{ company_email }} was printed to your Render Logs.</p>
+                                {% else %}
+                                    <p class="message message-success">Notification email sent to {{ company_email }}.</p>
+                                {% endif %}
                             {% elif email_error %}
                                 <p class="message message-error">Email could not be sent: {{ email_error }}</p>
                             {% endif %}
